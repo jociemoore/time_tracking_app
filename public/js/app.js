@@ -1,12 +1,31 @@
 class TimerDashboard extends React.Component {
+  state = {
+    timers: [
+      {
+        title: 'Practice squat',
+        project: 'Gym Chores',
+        id: uuid.v4(),
+        elapsed: 5456099,
+        runningSince: Date.now(),
+      },
+      {
+        title: 'Bake Squash',
+        project: 'Kitchen Chores',
+        id: uuid.v4(),
+        elapsed: 1273998,
+        runningSince: null,
+      }
+    ],
+  };
+
   render() {
     return (
       <div className='ui three column centered grid'>
         <div className='column'>
-          <EditableTimerList />
-          <ToggleableTimerForm
-            isOpen={false}
+          <EditableTimerList 
+            timers={this.state.timers}
           />
+          <ToggleableTimerForm />
         </div>
       </div>
     );
@@ -15,32 +34,33 @@ class TimerDashboard extends React.Component {
 
 class EditableTimerList extends React.Component {
   render() {
+    const timers = this.props.timers.map((timer) => (
+      <EditableTimer
+        key={timer.id}
+        id={timer.id}
+        title={timer.title}
+        project={timer.project}
+        elapsed={timer.elapsed}
+        runningSince={timer.runningSince}
+      />
+    ));
     return (
       <div id='timers'>
-        <EditableTimer
-          title='Learn React'
-          project='Web Domination'
-          elapsed='8996300'
-          runningSince={null}
-          editFormOpen={true}
-        />
-        <EditableTimer
-          title='Learn extreme ironing'
-          project='World Domination'
-          elasped='3890985'
-          runningSince={null}
-          editFormOpen={true}
-        />
+        {timers}
       </div>
     );
   }
 }
 
 class EditableTimer extends React.Component {
+  state = {
+    editFormOpen: false,
+  }
   render() {
-    if (this.props.editFormOpen) {
+    if (this.state.editFormOpen) {
       return (
         <TimerForm
+          id={this.props.id}
           title={this.props.title}
           project={this.props.project}
         />
@@ -48,6 +68,7 @@ class EditableTimer extends React.Component {
     } else {
       return (
         <Timer
+          id={this.props.id}
           title={this.props.title}
           project={this.props.project}
           elapsed={this.props.elapsed}
@@ -59,19 +80,40 @@ class EditableTimer extends React.Component {
 }
 
 class TimerForm extends React.Component {
+  state = {
+    title: this.props.title || '',
+    project: this.props.project || '',
+  }
+
+  handleTitleChange = (e) => {
+    this.setState({ title: e.target.value });
+  }
+  handleProjectChange = (e) => {
+    this.setState({ project: e.target.value });
+  }
+
   render() {
     const submitText = this.props.title ? 'Update' : 'Create';
+
     return (
       <div className='ui centered card'>
         <div className='content'>
           <div className='ui form'>
             <div className='field'>
               <label>Title</label>
-              <input type='text' defaultValue={this.props.title} />
+              <input 
+                type='text' 
+                value={this.state.title} 
+                onChange={this.handleTitleChange}
+              />
             </div>
             <div className='field'>
               <label>Project</label>
-              <input type='text' defaultValue={this.props.project} />
+              <input 
+                type='text' 
+                value={this.state.project} 
+                onChange={this.handleProjectChange}
+              />
             </div>
             <div className='ui two bottom attached buttons'>
               <button className='ui basic blue button'>
@@ -89,15 +131,26 @@ class TimerForm extends React.Component {
 }
 
 class ToggleableTimerForm extends React.Component {
+  state = {
+    isOpen: false,
+  }
+
+  handleFormOpen = () => {
+    this.setSte({ isOpen: true });
+  }
+
   render() {
-    if (this.props.isOpen) {
+    if (this.state.isOpen) {
       return (
         <TimerForm />
       );
     } else {
       return (
         <div className='ui basic content center aligned segment'>
-          <button className='ui basic button icon'>
+          <button 
+            className='ui basic button icon'
+            onClick={this.handleFormOpen}
+          >
             <i className='plus icon' />
           </button>
         </div>
