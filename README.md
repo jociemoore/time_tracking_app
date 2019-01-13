@@ -1,6 +1,6 @@
 # Time Tracker Application
 
-This ReactJS application allows users to create, update, and delete tasks in order to track the amount of time required to complete them. Additionally, users can start and stop timers to continue tracking time later. This application uses a data.json file for storage.
+This React application allows users to create, update, and delete tasks in order to track the amount of time required to complete them. Additionally, users can start and stop timers to continue tracking time later. This application uses a data.json file for storage.
 
 Reference: https://www.fullstackreact.com/
 
